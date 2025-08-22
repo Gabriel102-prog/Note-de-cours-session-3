@@ -24,7 +24,7 @@ class CompteBancaire:
             raise ValueError("solde")
         if montant < 0:
              raise ValueError("solde")
-        self.__solde = montant
+        self.__solde += montant
         self.__historique.append(f"modification solde:{montant}")
 
     @numero_compte.setter
