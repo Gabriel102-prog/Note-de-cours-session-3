@@ -3,6 +3,8 @@ class Compte:
         self.__numero_compte = numero_compte
         self.__titulaire_compte = titulaire_compte
         self.__solde_compte = solde_compte
+        if solde_compte > 0 :
+            self.deposer(solde_compte)
         self.__nbre_operations = nbre_operations
 
     @property
