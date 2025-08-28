@@ -1,0 +1,37 @@
+Développer une application pour gérer des étudiants et leurs notes dans différentes
+matières.
+1) Classe Etudiant (4 pts)
+▪ Attributs privés : (0.5 pt)
+✓ id (int)
+✓ nom (str)
+✓ notes (dict : {matiere: note} où matiere est une chaîne et note un
+float entre 0 et 20)
+▪ Méthodes :
+✓ ajouter_note(matiere: str, note: float) : ajoute ou met à jour la note
+de la matière donnée. La note doit être dans [0, 20], sinon lever une
+exception ou ignorer avec un message. (1.5 pts)
+✓ moyenne() : calcule et retourne la moyenne des notes. S’il n’y a
+aucune note, retourner 0.0. (1.5 pts)
+✓ __str__(self) : retourne une chaîne contenant id, nom et moyenne
+formatée avec deux décimales. (0.5 pt)
+2) Classe Groupe (3 pts)
+▪ Attribut :
+✓ etudiants (list[Etudiant]) : la liste des étudiants du groupe. (0.25 pt)
+▪ Méthodes :
+✓ ajouter_etudiant(etudiant: Etudiant) : ajoute un étudiant. (0.25 pt)
+✓ afficher_etudiants() : affiche tous les étudiants (id, nom, moyenne).
+(0.5 pt)
+✓ meilleur_etudiant() Etudiant | None : retourne l’étudiant ayant la
+meilleure moyenne, ou None si la liste est vide. (1 pt)
+✓ notes_par_matiere() -> dict[str, list[float]] : retourne un
+dictionnaire {matiere: [liste de toutes les notes de tous les
+étudiants pour cette matière]}. (1 pt)
+3) Programme principal (3 pts)
+▪ Créer 3 étudiants. (0.5 pt)
+▪ Ajouter des notes dans trois matières (1 pt)
+▪ Stocker ces étudiants dans un groupe. (0.5 pt)
+▪ Afficher :
+✓ La liste des étudiants avec leurs moyennes. (0.5 pt)
+✓ Le meilleur étudiant. (0.5 pt)
+✓ Les notes regroupées par matière (le dict retourné par
+notes_par_matiere). (Question Bonus) (0.5 pt)
