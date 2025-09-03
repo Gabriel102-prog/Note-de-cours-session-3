@@ -44,11 +44,11 @@ class Etudiant:
 
 
 class Groupe:
-    def __init__(self, etudiants=None):  # TODO
+    def __init__(self, etudiants=None):
         if etudiants:
-            self.etudiants: list[Etudiant] = []
+            self.etudiants: list[Etudiant] = list(etudiants)
         else:
-            self.etudiants = list(etudiants)
+            self.etudiants : list[etudiants] =[]
 
 
     def ajouter_etudiant(self, etudiant: Etudiant):
