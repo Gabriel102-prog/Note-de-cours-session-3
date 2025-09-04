@@ -19,7 +19,6 @@ print(essai.trouver_solution())
 
 
 import matplotlib.pyplot as plt
-import random
 
 valeurs = 80 + 12 * np.random.standard_normal(size = 25)
 valeurs_sans_cent = []
@@ -35,6 +34,7 @@ plt.xlabel("Pourcentage de satisfaction")
 plt.ylabel("Nombres de clients")
 plt.title("Satisfaction clients")
 plt.grid(True)
+
 plt.hist(valeurs_sans_cent, width=4)
 plt.show()
 
