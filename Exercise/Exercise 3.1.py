@@ -17,12 +17,45 @@ class Quadratique:
 essai = Quadratique(1, 3, -10)
 print(essai.trouver_solution())
 
-import pandas as pd
+
 import matplotlib.pyplot as plt
 import random
 
-valeurs = 80 + 12 * np.random.standard_normal(size = 50)
-satisfaction = ["Très Satisfait, Satisfait, Neutre, Insatisfait, Très Insatisfait"]
-plt.xlim(10)
-plt.ylim(25)
+valeurs = 80 + 12 * np.random.standard_normal(size = 25)
+valeurs_sans_cent = []
+for valeur in valeurs:
+    if 100 <= valeur:
+        valeur = 100
+    valeurs_sans_cent.append(valeur)
+print(valeurs)
+print(valeurs_sans_cent)
+plt.xlim(0, 100)
+plt.ylim(0, 10)
+plt.xlabel("Pourcentage de satisfaction")
+plt.ylabel("Nombres de clients")
+plt.title("Satisfaction clients")
+plt.grid(True)
+plt.hist(valeurs_sans_cent, width=4)
+plt.show()
 
+satisfaction = ["Très Insatisfait", "Très Inatisfait", "Neutre", "Satisfait", "Très Satifait"]
+nb_personnes_satisfaction = [0, 0, 0, 0, 0]
+for valeurs in valeurs_sans_cent:
+    if 0 <= valeurs <=20:
+        nb_personnes_satisfaction[0] += 1
+    elif 20 < valeurs <= 40:
+        nb_personnes_satisfaction[1] += 1
+    elif 40 < valeurs <= 60:
+        nb_personnes_satisfaction[2] += 1
+    elif 60 < valeurs <= 80:
+        nb_personnes_satisfaction[3] += 1
+    elif 80 < valeurs <= 100:
+        nb_personnes_satisfaction[4] += 1
+
+plt.ylim(0, 25)
+plt.xlabel("Pourcentage de satisfaction")
+plt.ylabel("Nombres de clients")
+plt.title("Satisfaction clients")
+plt.bar(satisfaction, nb_personnes_satisfaction)
+print(nb_personnes_satisfaction)
+plt.show()
