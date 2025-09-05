@@ -1,11 +1,48 @@
 # Exersice 1
+import random
+import matplotlib.pyplot as plt
 class Montecarlo:
-    def __init__(self, N):
-        self.N = N
+    def __init__(self,nb_points ):
+        self.nb_points = nb_points
+        self.x_int = []
+        self.y_int = []
+        self.x_ext = []
+        self.y_ext = []
+        self.point_dans_cercle = 0
 
+    def generer_points(self):
+        for i in range(self.nb_points):
+            x = random.uniform(-1, 1)
+            y = random.uniform(-1, 1)
+
+            if x**2 + y**2 <= 1:
+                self.x_int.append(x)
+                self.y_int.append(y)
+                self.point_dans_cercle += 1
+            else:
+                self.x_ext.append(x)
+                self.y_ext.append(y)
+
+    def estimer_pi(self):
+        return 4 * self.point_dans_cercle / self.nb_points
+
+    def representation_points(self):
+        plt.title("Montecarlo représentation")
+        plt.xlabel("x")
+        plt.ylabel("y")
+        plt.xlim(-1, 1)
+        plt.ylim(-1, 1)
+        plt.figure(figsize = (6, 6))
+        plt.plot(self.x_int, self.y_int, 'og')
+        plt.plot(self.x_ext, self.y_ext, 'or')
+        plt.show()
+
+objet = Montecarlo(10000)
+objet.generer_points()
+objet.representation_points()
 
 # Exersice 2
-import matplotlib.pyplot as plt
+
 class CroissancePlante:
     def __init__(self ):
         self.__temps = []
@@ -40,7 +77,7 @@ class CroissancePlante:
         self.hauteur.append(h)
         self.temps.append(t) # TODO besoin de rapeler setter?
         self.imposer_croissance_temps()
-        
+
     def imposer_croissance_temps(self):
         valeur = 0
         for i in self.temps:
@@ -65,7 +102,7 @@ plante = CroissancePlante()
 plante.ajouter_mesure(1, 3)
 plante.ajouter_mesure(2, 4)
 plante.ajouter_mesure(8, 3)
-plante.ajouter_mesure(3,7)
+#plante.ajouter_mesure(3,7)
 plante.tracer()
 
 # Exercise 3
@@ -109,8 +146,9 @@ class  Document:
         self.__disponible = True
 
     def __str__(self):
+        dispo = "Oui" if self.__disponible else "Non"
         return (f"Le id du document est: {self.__id}, son titre est: {self.__titre}, son année est : {self.__annee} "
-                f"et il est {self.__disponible} que se document est diponible")  #TODO regarder si représentation correcte
+                f"et dispo: {dispo} ")
 
 
 class Livre(Document):
@@ -186,15 +224,102 @@ class Adherent:
         return self.__journal.copy()
 
     def limite_emprunts(self):
-        return 3  #TODO je ne comprend pas sa sert a quoi
+        return 3
 
     def emprunter(self, doc: Document) -> None:
-        pass
+        nb_emprun = 0
+        if not doc.disponible:
+            raise ValueError("Le document n'est pas disponible")
+        for i in self.__journal:
+            if "emprun" in i:
+                nb_emprun += 1
+            if "retour" in i:
+                nb_emprun -= 1
+            if nb_emprun > self.limite_emprunts():
+                raise ValueError("Vous avez déja trois empruns")
+        doc.emprunter()
+        self.__emprunts.append(doc)
+        self.__journal.append(f"emprun:{doc.titre}")
+
     def rendre(self, doc: Document) -> None:
-        pass
+        if doc.disponible:
+            raise ValueError("Le document n'a jamais été emprunter")
+        doc.rendre()
+        self.__emprunts.remove(doc)
+        self.__journal.append(f"retour:{doc.titre}")
     def __str__(self):
         return f"L'id est: {self.__id}, le nom est: {self.__nom} et le nombre d'emprunt est de: {len(self.__emprunts)} "
         # TODO ?
 
 
+class AdherentPremium(Adherent):
+    def __init__(self, id: str, nom: str, emprunts: list[Document], journal: list[str]):
+        super().__init__(id, nom, emprunts, journal)
 
+    def limite_emprunts(self):
+        return 5
+
+class Bibliotheque:
+    def __init__(self,documents: list[Document]):
+        self.__documents = documents
+
+    @property
+    def documents(self):
+        return self.__documents
+
+    def ajouter_document(self, doc: Document) -> None:
+        if not isinstance(doc, Document):  # TODO valider le type
+            raise TypeError("Le document doit être une instance de la classe Document")
+        self.__documents.append(doc)
+    def rechercher_par_titre(self, mot: str) -> list[Document]:
+        resultat_recherche = []
+        for i in self.__documents:
+            if mot in i.titre:
+                resultat_recherche.append(i)
+        return resultat_recherche
+
+livre1 = Livre("L1", "Python Facile", 2022, "Dupont", 300)
+livre2 = Livre("L2", "Programmation Orientée Objet", 2021, "Martin", 450)
+mag1 = Magazine("M1", "Science & Vie", 2023, 45)
+dvd1 = DVD("D1", "Inception", 2010, 148)
+
+# Création d'une bibliothèque avec une liste de documents
+biblio = Bibliotheque([livre1, livre2, mag1, dvd1])
+
+print("Documents dans la bibliothèque :")
+for doc in biblio.documents:
+    print(" -", doc)
+
+# Recherche d’un document par titre
+print("\nRecherche 'Python' dans les titres :")
+resultats = biblio.rechercher_par_titre("Python")
+for doc in resultats:
+    print("  ->", doc)
+
+# Création d’adhérents
+adh1 = Adherent("A1", "Alice", [], [])
+adh2 = AdherentPremium("A2", "Bob", [], [])
+
+# Emprunt par Alice
+print("\nAlice emprunte 'Python Facile'...")
+adh1.emprunter(livre1)
+print(adh1)
+print("Journal d'Alice :", adh1.releve())
+
+# Tentative d'emprunt du même livre par Bob (doit lever une erreur car indisponible)
+try:
+    adh2.emprunter(livre1)
+except ValueError as e:
+    print("\nErreur attendue :", e)
+
+# Bob emprunte un autre livre
+print("\nBob emprunte 'Programmation Orientée Objet'...")
+adh2.emprunter(livre2)
+print(adh2)
+print("Journal de Bob :", adh2.releve())
+
+# Alice rend son livre
+print("\nAlice rend son livre...")
+adh1.rendre(livre1)
+print(adh1)
+print("Journal d'Alice :", adh1.releve())
