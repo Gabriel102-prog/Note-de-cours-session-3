@@ -55,6 +55,7 @@ class Marius(tk.Tk):
         frame_droite.pack(side="right", fill="x")
 
         frame_centre = tk.Frame(frame, borderwidth=2)
+
         frame_centre.pack(side="left", fill="x")
 
         nom = tk.Label(frame_gauche, text="Nom:", font=("Arial", 10), fg="black")
