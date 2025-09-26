@@ -27,12 +27,12 @@ class Montecarlo:
         return 4 * self.point_dans_cercle / self.nb_points
 
     def representation_points(self):
+        plt.figure(figsize=(6, 6))
         plt.title("Montecarlo représentation")
         plt.xlabel("x")
         plt.ylabel("y")
         plt.xlim(-1, 1)
         plt.ylim(-1, 1)
-        plt.figure(figsize = (6, 6))
         plt.plot(self.x_int, self.y_int, 'og')
         plt.plot(self.x_ext, self.y_ext, 'or')
         plt.show()
@@ -69,13 +69,13 @@ class CroissancePlante:
         for i in hauteur:
             if i <= 0:
                 raise ValueError("Le temps ne peut pas être négatif")
-        self.__temps = hauteur
+        self.__hauteur = hauteur
 
     def ajouter_mesure(self, t: float, h: float):
         if t <= 0 or not isinstance(t, int) or not isinstance(h, int):
             raise ValueError("Temps et hauteur doit être des entier et le temps doit être positif ")
         self.hauteur.append(h)
-        self.temps.append(t) # TODO besoin de rapeler setter?
+        self.temps.append(t)
         self.imposer_croissance_temps()
 
     def imposer_croissance_temps(self):
@@ -88,7 +88,7 @@ class CroissancePlante:
 
 
     def tracer(self):
-        if len(self.hauteur) == 0 or len(self.temps) == 0:
+        if len(self.__hauteur) == 0 or len(self.__temps) == 0:
             raise ValueError("Il y a aucune valeur de temps ou de hauteur")
         plt.title("Croissance de la plante")
         plt.ylabel("Hauteur (cm)")
@@ -97,12 +97,11 @@ class CroissancePlante:
         plt.ylim(0, (max(self.__hauteur) + 1))
         plt.plot(self.temps, self.hauteur, "sg--")
         plt.show()
-        # TODO Fournir des getters/propriétés pour lire temps et hauteurs sans exposer directement les listes privées
+
 plante = CroissancePlante()
 plante.ajouter_mesure(1, 3)
 plante.ajouter_mesure(2, 4)
 plante.ajouter_mesure(8, 3)
-#plante.ajouter_mesure(3,7)
 plante.tracer()
 
 # Exercise 3
@@ -132,8 +131,9 @@ class  Document:
         self.__titre = titre
     @annee.setter
     def annee(self, annee):
-        if not isinstance(annee, int):
-            raise ValueError("Vous n'avez pas entrez un année positif")
+        if not isinstance(annee, int):raise ValueError("Vous n'avez pas entrez un année positif")
+        if annee <= 0: raise ValueError("L'année doit être positive")
+        self.__annee = annee
 
     def emprunter(self) -> None :
         if not self.disponible:
@@ -214,7 +214,7 @@ class Adherent:
     def nom(self, nom):
         if not nom.strip():
             raise ValueError("Vous n'avez pas entrez de nom")
-        self.__nom = nom  #TODO  nom (lecture/écriture : non vide, title())
+        self.__nom = nom.strip().title()
     @property
     def emprunts(self):
         return self.__emprunts.copy()
@@ -226,30 +226,30 @@ class Adherent:
     def limite_emprunts(self):
         return 3
 
-    def emprunter(self, doc: Document) -> None:
-        nb_emprun = 0
-        if not doc.disponible:
+    def emprunter(self, document: Document) -> None:
+        if not document.disponible:
             raise ValueError("Le document n'est pas disponible")
-        for i in self.__journal:
-            if "emprun" in i:
-                nb_emprun += 1
-            if "retour" in i:
-                nb_emprun -= 1
-            if nb_emprun > self.limite_emprunts():
-                raise ValueError("Vous avez déja trois empruns")
-        doc.emprunter()
-        self.__emprunts.append(doc)
-        self.__journal.append(f"emprun:{doc.titre}")
 
-    def rendre(self, doc: Document) -> None:
-        if doc.disponible:
+        if isinstance(document, Magazine):
+            for i in self.__emprunts:
+                if isinstance(i, Magazine):
+                    raise ValueError("Vous avez déjà un magazine, impossible d'en emprunter un deuxième")
+
+        if len(self.__emprunts) >= self.limite_emprunts():
+            raise ValueError(f"Vous avez déjà atteint la limite de {self.limite_emprunts()} emprunts")
+        document.emprunter()
+        self.__emprunts.append(document)
+        self.__journal.append(f"emprun:{document.titre}")
+
+    def rendre(self, document: Document) -> None:
+        if document.disponible:
             raise ValueError("Le document n'a jamais été emprunter")
-        doc.rendre()
-        self.__emprunts.remove(doc)
-        self.__journal.append(f"retour:{doc.titre}")
+        document.rendre()
+        self.__emprunts.remove(document)
+        self.__journal.append(f"retour:{document.titre}")
     def __str__(self):
         return f"L'id est: {self.__id}, le nom est: {self.__nom} et le nombre d'emprunt est de: {len(self.__emprunts)} "
-        # TODO ?
+
 
 
 class AdherentPremium(Adherent):
@@ -265,12 +265,12 @@ class Bibliotheque:
 
     @property
     def documents(self):
-        return self.__documents
+        return self.__documents.copy()
 
-    def ajouter_document(self, doc: Document) -> None:
-        if not isinstance(doc, Document):  # TODO valider le type
+    def ajouter_document(self, document: Document) -> None:
+        if not isinstance(document, Document):
             raise TypeError("Le document doit être une instance de la classe Document")
-        self.__documents.append(doc)
+        self.__documents.append(document)
     def rechercher_par_titre(self, mot: str) -> list[Document]:
         resultat_recherche = []
         for i in self.__documents:
