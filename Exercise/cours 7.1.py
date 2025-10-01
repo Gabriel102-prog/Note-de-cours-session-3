@@ -22,6 +22,7 @@ class Validation(tk.Tk):
         vcmd = (self.register(self.valider_entree), '%P')
         invcmd = (self.register(self.entree_invalide),)
 
+
         tk.Label(frame, text="Ma To-Do List", font=("Arial", 25), fg="black").grid(row=0, column=0, columnspan=2,sticky="ew",padx=10, pady=10)
 
         tk.Label(frame, text="Taper la tâche à ajouter:", font=("Arial", 10), fg="black").grid(row=1, column=0, sticky="w", padx=15,pady=10)
@@ -43,18 +44,15 @@ class Validation(tk.Tk):
         self.rb1.grid(row=4, column=1, sticky="w")
         self.rb2.grid(row=5, column=1, sticky="w")
 
-        tk.Button(frame, text="Ajouter la tache", font=("Arial", 9), command=self.entree_tache, state= self.bouton_tache).grid(row=6, column=0, sticky="ew", columnspan=2, padx=250,pady=20)
+        self.bouton= tk.Button(frame, text="Ajouter la tache", font=("Arial", 9), command=self.entree_tache, state= "disabled")
+        self.bouton.grid(row=6, column=0, sticky="ew", columnspan=2, padx=250,pady=20)
 
         self.list = tk.Listbox(frame, width=55, height=11, relief="ridge", bd=2)
         self.list.grid(row=7, column=0, columnspan=2, sticky="nsew")
 
-    def bouton_tache(self):
-        if 0 < (len(self.entree1.get())) and 0 < (len(self.entree2.get())):
-            return "disabled"
-        else:
-            return"active"
 
     def valider_entree(self, nouvelle_valeur):
+        self.bouton_tache()
         if nouvelle_valeur == "":
             return True
         try:
@@ -66,8 +64,8 @@ class Validation(tk.Tk):
         except ValueError:
             return False
 
+
     def entree_invalide(self):
-        self.bell()
         messagebox.showwarning("Entrée invalide", "Veuillez entrer un entier (positif).")
 
     def entree_tache(self):
@@ -83,6 +81,13 @@ class Validation(tk.Tk):
             self.entree2.delete(0, tk.END)
         else:
             messagebox.showwarning("Champs manquants", "Veuillez remplir tous les champs.")
+
+    def bouton_tache(self):
+        if 0 < (len(self.entree1.get())) and 0 < (len(self.entree2.get())):
+            self.bouton.config(state="active")
+        else:
+            self.bouton.config(state="disabled")
+
 
 
 
