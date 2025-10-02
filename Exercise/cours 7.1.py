@@ -22,7 +22,6 @@ class Validation(tk.Tk):
         vcmd = (self.register(self.valider_entree), '%P')
         invcmd = (self.register(self.entree_invalide),)
 
-
         tk.Label(frame, text="Ma To-Do List", font=("Arial", 25), fg="black").grid(row=0, column=0, columnspan=2,sticky="ew",padx=10, pady=10)
 
         tk.Label(frame, text="Taper la tâche à ajouter:", font=("Arial", 10), fg="black").grid(row=1, column=0, sticky="w", padx=15,pady=10)
