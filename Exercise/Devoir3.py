@@ -1,36 +1,40 @@
 import tkinter as tk
 from tkinter import ttk as ttk
+import random
+from tkinter import messagebox
+
 
 class Compte(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("Simulateur de compte")
-        self.geometry("800x600")
-        self.columnconfigure(0, weight=1)
+        self.title("Simulateur de compte---Gabriel Bertrand")
+        self.geometry("900x300")
+        self.columnconfigure(0, weight=2)
         self.rowconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
         self.rowconfigure(1, weight=1)
+
+
         # Frame 1
-        self.frame1 = ttk.Frame(self)
+        self.frame1 = ttk.LabelFrame(self, text="Données du compte")
         self.frame1.grid(row=0, column=0, sticky="nsew",padx=10, pady=10)
         self.frame1.columnconfigure(0, weight=1)
         self.frame1.rowconfigure(0, weight=1)
-        self.frame1.columnconfigure(1, weight=1)
+        self.frame1.columnconfigure(1, weight=5)
         self.frame1.rowconfigure(1, weight=1)
         self.frame1.columnconfigure(2, weight=1)
         self.frame1.rowconfigure(2, weight=1)
-        self.frame1 = ttk.LabelFrame(self.frame, text="Données du compte")
-        self.label1.grid(row=0, column=0, sticky="snew") #TODO
-        self.label2 = ttk.Label(self.label1, text="Numéro", font=("Arial", 10))
-        self.label2.grid(row=0, column=0, sticky="ew", padx=10)
-        self.label3 = ttk.Label(self.frame1, text="Détenteur", font=("Arial", 10))
-        self.label3.grid(row=1, column=0, sticky="ew", padx=10)
-        self.label4 = ttk.Label(self.frame1, text="Solde", font=("Arial", 10))
-        self.label4.grid(row=2, column=0, sticky="ew", padx=10)
+        self.label2 = ttk.Label(self.frame1, text="Numéro:", font=("Arial", 10))
+        self.label2.grid(row=0, column=0, sticky="e")
+        self.label3 = ttk.Label(self.frame1, text="Détenteur:", font=("Arial", 10))
+        self.label3.grid(row=1, column=0, sticky="e")
+        self.label4 = ttk.Label(self.frame1, text="Solde:", font=("Arial", 10))
+        self.label4.grid(row=2, column=0, sticky="e")
         self.entry1 = ttk.Entry(self.frame1, font=("Arial", 10))
         self.entry1.grid(row=0, column=1, sticky="ew", padx=10)
-        self.checkbutton1 = ttk.Checkbutton(self.frame1, text="Gelé")
-        self.checkbutton1.grid(row=0, column=2, sticky="ew", padx=10)
+        self.gele = tk.BooleanVar(value=False)
+        self.checkbutton1 = ttk.Checkbutton(self.frame1, text="Gelé", variable=self.gele, command=self.geler)
+        self.checkbutton1.grid(row=0, column=2, padx=10)
         self.entry2 = ttk.Entry(self.frame1, font=("Arial", 10))
         self.entry2.grid(row=1, column=1, columnspan=2, sticky="ew", padx=10)
         self.entry3 = ttk.Entry(self.frame1, font=("Arial", 10))
@@ -38,17 +42,24 @@ class Compte(tk.Tk):
 
 
         # Frame2
-        self.frame2 = ttk.Frame(self)
+        self.frame2 = ttk.LabelFrame(self, text="Montant")
         self.frame2.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
         self.frame2.columnconfigure(0, weight=1)
         self.frame2.rowconfigure(0, weight=1)
         self.frame2.columnconfigure(1, weight=1)
         self.frame2.rowconfigure(1, weight=1)
         self.frame2.rowconfigure(2, weight=1)
-        self.label2 = ttk.LabelFrame(self.frame2, text="Montant")
-        self.label2.grid(row=0, column=0, sticky="ew")
         self.entry4 = ttk.Entry(self.frame2, font=("Arial", 10))
-        self.entry4.grid(row=0, column=0, sticky="ew")
+        self.entry4.grid(row=0, column=0)
+        self.bt1 = ttk.Button(self.frame2, text= "Random", command=self.random,state="active")
+        self.bt1.grid(row=1, column=0, padx=10)
+        self.valeurs = tk.StringVar(value="1 à 10")
+        self.rad1 = ttk.Radiobutton(self.frame2, text= "1 à 10", variable=self.valeurs, value=[1,10],state="active")
+        self.rad1.grid(row=0, column=1, sticky="ew", padx=10)
+        self.rad2 = ttk.Radiobutton(self.frame2, text="10 à 100", variable=self.valeurs, value=[10,100],state="active")
+        self.rad2.grid(row=1, column=1, sticky="ew", padx=10)
+        self.rad3 = ttk.Radiobutton(self.frame2, text="100 à 1000", variable=self.valeurs, value=[100,1000],state="active")
+        self.rad3.grid(row=2, column=1, sticky="ew", padx=10)
 
 
 
@@ -61,16 +72,74 @@ class Compte(tk.Tk):
         self.frame3.columnconfigure(1, weight=1)
         self.frame3.columnconfigure(2, weight=1)
         self.frame3.columnconfigure(3, weight=1)
-        self.bt6 = ttk.Button(self.frame3, text="Déposer")
-        self.bt6.grid(row=0, column=0, padx=10, pady=10)
-        self.bt7 = ttk.Button(self.frame3, text="Retirer")
-        self.bt7.grid(row=0, column=1, padx=10, pady=10)
-        self.bt8 = ttk.Button(self.frame3, text="Vider")
-        self.bt8.grid(row=0, column=2, padx=10, pady=10)
-        self.bt9 = ttk.Button(self.frame3, text="Reset")
-        self.bt9.grid(row=0, column=3, padx=10, pady=10)
+        self.bt6 = ttk.Button(self.frame3, text="Déposer", command=self.deposer,state="active")
+        self.bt6.grid(row=0, column=0, sticky="n", padx=10, pady=10)
+        self.bt7 = ttk.Button(self.frame3, text="Retirer", command= self.retirer,state="active")
+        self.bt7.grid(row=0, column=1, sticky="n", padx=10, pady=10)
+        self.bt8 = ttk.Button(self.frame3, text="Vider",command=self.vider, state="active")
+        self.bt8.grid(row=0, column=2, sticky="n", padx=10, pady=10)
+        self.bt9 = ttk.Button(self.frame3, text="Reset", command=self.reset,state="active")
+        self.bt9.grid(row=0, column=3, sticky="n", padx=10, pady=10)
 
+    # Fonction pour gén.rer nombre au hazard
+    def random(self):
+        self.entry4.delete(0, "end")
+        intervalle = self.valeurs.get()
+        liste = list(map(int, intervalle.split()))
+        valeur = str(round(random.uniform(liste[0], liste[1]),2))
+        self.entry4.insert("end",valeur)
 
+    def deposer(self):
+        if len(self.entry1.get().strip()) != 5 :
+            messagebox.showwarning("Dépot impossible", "Veuillez entrer un numéro valide d'exactement 5 chiffres.")
+        if len(self.entry2.get().strip()) < 5 :
+            messagebox.showwarning("Dépot impossible", "Veuillez entrer un nom de détenteur valide d'au moins 5 caractères.")
+        else:
+            depot = float(self.entry4.get())
+            montant_initial = float(self.entry3.get())
+            self.entry3.delete(0, "end")
+            self.entry3.insert("end", str(round(depot + montant_initial, 2)))
+
+    def retirer(self):
+        if len(self.entry1.get().strip()) != 5:
+            messagebox.showwarning("Dépot impossible", "Veuillez entrer un numéro valide d'exactement 5 chiffres.")
+        if len(self.entry2.get().strip()) < 5:
+            messagebox.showwarning("Dépot impossible",
+                                   "Veuillez entrer un nom de détenteur valide d'au moins 5 caractères.")
+        else:
+            retrait = float(self.entry4.get())
+            montant_initial = float(self.entry3.get())
+            self.entry3.delete(0, "end")
+            self.entry3.insert("end", str(round(montant_initial - retrait, 2)))
+
+    def reset(self):
+        self.entry1.delete(0, "end")
+        self.entry2.delete(0, "end")
+        self.entry3.delete(0, "end")
+        self.entry4.delete(0, "end")
+
+    def vider(self):
+        self.entry3.delete(0, "end")
+
+    def geler(self):
+        if self.gele.get():
+            self.bt1.config(state="disabled")
+            self.bt6.config(state="disabled")
+            self.bt7.config(state="disabled")
+            self.bt8.config(state="disabled")
+            self.bt9.config(state="disabled")
+            self.rad1.config(state="disabled")
+            self.rad2.config(state="disabled")
+            self.rad3.config(state="disabled")
+        else:
+            self.bt1.config(state="normal")
+            self.bt6.config(state="normal")
+            self.bt7.config(state="normal")
+            self.bt8.config(state="active")
+            self.bt9.config(state="active")
+            self.rad1.config(state="active")
+            self.rad2.config(state="active")
+            self.rad3.config(state="active")
 
 
 
