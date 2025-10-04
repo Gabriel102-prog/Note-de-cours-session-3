@@ -13,7 +13,7 @@ class Compte(tk.Tk):
         self.rowconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
         self.rowconfigure(1, weight=1)
-
+        self.utilisateur = {}
 
         # Frame 1
         self.frame1 = ttk.LabelFrame(self, text="Données du compte")
@@ -37,7 +37,7 @@ class Compte(tk.Tk):
         self.checkbutton1.grid(row=0, column=2, padx=10)
         self.entry2 = ttk.Entry(self.frame1, font=("Arial", 10))
         self.entry2.grid(row=1, column=1, columnspan=2, sticky="ew", padx=10)
-        self.entry3 = ttk.Entry(self.frame1, font=("Arial", 10))
+        self.entry3 = ttk.Entry(self.frame1, font=("Arial", 10),state="readonly")
         self.entry3.grid(row=2, column=1, columnspan=2, sticky="ew", padx=10)
 
 
@@ -53,7 +53,7 @@ class Compte(tk.Tk):
         self.entry4.grid(row=0, column=0)
         self.bt1 = ttk.Button(self.frame2, text= "Random", command=self.random,state="active")
         self.bt1.grid(row=1, column=0, padx=10)
-        self.valeurs = tk.StringVar(value="1 à 10")
+        self.valeurs = tk.StringVar(value="")
         self.rad1 = ttk.Radiobutton(self.frame2, text= "1 à 10", variable=self.valeurs, value=[1,10],state="active")
         self.rad1.grid(row=0, column=1, sticky="ew", padx=10)
         self.rad2 = ttk.Radiobutton(self.frame2, text="10 à 100", variable=self.valeurs, value=[10,100],state="active")
@@ -90,15 +90,32 @@ class Compte(tk.Tk):
         self.entry4.insert("end",valeur)
 
     def deposer(self):
+        clé = (self.entry1.get(), self.entry2.get().strip())
+        num1, det1 = clé
         if len(self.entry1.get().strip()) != 5 :
             messagebox.showwarning("Dépot impossible", "Veuillez entrer un numéro valide d'exactement 5 chiffres.")
         if len(self.entry2.get().strip()) < 5 :
             messagebox.showwarning("Dépot impossible", "Veuillez entrer un nom de détenteur valide d'au moins 5 caractères.")
-        else:
+        for clés in self.utilisateur:
+            num2, det2 = clés
+            if num1 == num2 and det1 != det2:
+                messagebox.showwarning("Dépot impossible","Le numéro de compte que vous avez rentré existe déja. Veuillez le changer.")
+                return
+        if clé in self.utilisateur:
             depot = float(self.entry4.get())
-            montant_initial = float(self.entry3.get())
+            montant_initial = self.utilisateur[clé]
+            self.entry3.config(state="normal")
             self.entry3.delete(0, "end")
             self.entry3.insert("end", str(round(depot + montant_initial, 2)))
+            self.entry3.config(state="readonly")
+            self.utilisateur[clé] += depot
+            print(1)
+        if not clé in self.utilisateur:
+            depot = float(self.entry4.get())
+            self.entry3.config(state="normal")
+            self.entry3.insert(0, str(round(depot, 2)))
+            self.entry3.config(state="readonly")
+            self.utilisateur[self.entry1.get(), self.entry2.get().strip()] = depot
 
     def retirer(self):
         if len(self.entry1.get().strip()) != 5:
@@ -115,8 +132,11 @@ class Compte(tk.Tk):
     def reset(self):
         self.entry1.delete(0, "end")
         self.entry2.delete(0, "end")
+        self.entry3.config(state= "normal")
         self.entry3.delete(0, "end")
+        self.entry3.config(state="readonly")
         self.entry4.delete(0, "end")
+        self.valeurs = tk.StringVar(value="")
 
     def vider(self):
         self.entry3.delete(0, "end")
