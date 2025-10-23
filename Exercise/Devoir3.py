@@ -177,6 +177,10 @@ class Compte(tk.Tk):
             self.rad1.config(state="disabled")
             self.rad2.config(state="disabled")
             self.rad3.config(state="disabled")
+            self.entry1.config(state="disabled")
+            self.entry2.config(state="disabled")
+            self.entry3.config(state="disabled")
+            self.entry4.config(state="disabled")
         else:
             self.bt1.config(state="normal")
             self.bt6.config(state="normal")
@@ -186,6 +190,10 @@ class Compte(tk.Tk):
             self.rad1.config(state="active")
             self.rad2.config(state="active")
             self.rad3.config(state="active")
+            self.entry1.config(state="normal")
+            self.entry2.config(state="normal")
+            self.entry3.config(state="normal")
+            self.entry4.config(state="normal")
 
 
 
