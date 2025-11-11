@@ -2,6 +2,8 @@ import sqlite3
 import tkinter as tk
 from tkinter import ttk, messagebox
 
+import pytest
+
 DB_PATH = "people.db"
 
 class GestionEtudiant(tk.Tk):
@@ -185,12 +187,13 @@ class GestionEtudiant(tk.Tk):
     def supprimer(self):
         selection = self.tree.selection()
         if selection:
-            item = selection[0]
-            valeurs = self.tree.item(item, "values")
-            id = int(valeurs[0])
-            self.tree.delete(item)
-            self._delete(id)
-            self._load_rows()
+            if messagebox.askyesno("Supression", "Voulez vous supprimer cette ligne?"):
+                item = selection[0]
+                valeurs = self.tree.item(item, "values")
+                id = int(valeurs[0])
+                self.tree.delete(item)
+                self._delete(id)
+                self._load_rows()
         self.selected_id = None
         self._update_buttons()
 
