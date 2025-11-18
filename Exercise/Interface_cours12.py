@@ -21,7 +21,7 @@ class Interface(tk.Tk):
         self.label1.grid(row=0, column=0,sticky="ew")
         self.variable1 = tk.StringVar()
         self.variable1.set("Achat")
-        self.values1 = ["Vendue", "Acheté"]
+        self.values1 = ["Vendue", "Achat"]
         self.list1 = ttk.Combobox(self.frame1, values=self.values1, state="readonly", textvariable=self.variable1)
         self.list1.grid(row=0, column=1,sticky="ew")
         self.list1.bind("<<ComboboxSelected>>", self.statut)
@@ -98,13 +98,8 @@ class Interface(tk.Tk):
             self.label_vendue.grid()
 
 
-            # self.label5_2 = ttk.Label(self.frame1, text="Quantité acheté")
-            # self.label5_2.grid(row=4, column=0,sticky="ew")
-            # self.bt1.grid_remove()
-            # self.bt1_2 = ttk.Button(self.frame1, text="Acheté")
-            # self.bt1_2.grid(column=0, row=0, sticky="ew")
-        if self.variable1.get() == "Enprunté":
-            self.label5.grid_remove()
+
+
 
 if __name__ == "__main__":
     Interface().mainloop()
