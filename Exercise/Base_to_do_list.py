@@ -11,6 +11,7 @@ class Validation(tk.Tk):
         frame.grid(row=0, column=0, sticky="ewsn")
         frame.columnconfigure(0, weight=1)
         frame.columnconfigure(1, weight=1)
+
         frame.rowconfigure(0, weight=10)
         frame.rowconfigure(1, weight=1)
         frame.rowconfigure(2, weight=1)
