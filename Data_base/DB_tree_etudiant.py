@@ -4,7 +4,7 @@ from tkinter import ttk, messagebox
 
 import pytest
 
-DB_PATH = "../Data_base/people.db"
+DB_PATH = "people.db"
 
 class GestionEtudiant(tk.Tk):
     def __init__(self):
